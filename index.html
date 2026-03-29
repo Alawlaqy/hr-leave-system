@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Leave Management System</title>
+    <meta name="description"
+        content="Professional HR Leave Management System for vacation, absence, late, and business trip requests">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/components.css?v=3">
+    <link rel="stylesheet" href="css/analytics.css?v=3">
+</head>
+
+<body>
+    <!-- Authentication View -->
+    <div id="auth-container" class="auth-wrapper" style="display: flex;">
+        <div class="auth-card" id="login-view">
+            <div class="auth-header">
+                <div class="logo-icon" style="margin: 0 auto 15px; text-align: center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; color: var(--primary-color);">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </div>
+                <h2 style="text-align: center; margin-bottom: 5px;">Welcome Back</h2>
+                <p style="text-align: center; color: var(--text-secondary);">Log in to access your HR portal</p>
+            </div>
+            <form id="form-login">
+                <div class="form-group full-width" style="margin-bottom: 15px;">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="name@company.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                </div>
+                <div class="form-group full-width" style="margin-bottom: 20px;">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                </div>
+                <div class="auth-error" id="login-error" style="display: none; color: var(--error-600); margin-bottom: 15px; text-align: center; font-size: 0.9em; padding: 10px; background: #fee2e2; border-radius: 6px;"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1em;">Sign In</button>
+            </form>
+            <div class="auth-footer" style="margin-top: 20px; text-align: center; font-size: 0.9em;">
+                <p>Don't have an account? <a href="#" id="link-register" style="color: var(--primary-color); font-weight: 500;">Register here</a></p>
+            </div>
+        </div>
+
+        <div class="auth-card" id="register-view" style="display: none;">
+            <div class="auth-header">
+                <h2 style="text-align: center; margin-bottom: 5px;">Create Account</h2>
+                <p style="text-align: center; color: var(--text-secondary);">Register to submit leave requests</p>
+            </div>
+            <form id="form-register">
+                <div class="form-group full-width" style="margin-bottom: 15px;">
+                    <label for="reg-name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="reg-name" required placeholder="John Doe" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                </div>
+                <div class="form-group full-width" style="margin-bottom: 15px;">
+                    <label for="reg-email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="reg-email" required placeholder="name@company.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                </div>
+                <div class="form-group full-width" style="margin-bottom: 15px;">
+                    <label for="reg-dept">Department <span class="required">*</span></label>
+                    <select id="reg-dept" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="">Select Department</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="HR">HR</option>
+                        <option value="Operations">Operations</option>
+                        <option value="IT">IT</option>
+                        <option value="Executive">Executive</option>
+                    </select>
+                </div>
+                <div class="form-group full-width" style="margin-bottom: 20px;">
+                    <label for="reg-password">Password <span class="required">*</span></label>
+                    <input type="password" id="reg-password" required placeholder="Create a password" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                </div>
+                <div class="auth-error" id="register-error" style="display: none; color: var(--error-600); margin-bottom: 15px; text-align: center; font-size: 0.9em; padding: 10px; background: #fee2e2; border-radius: 6px;"></div>
+                <div class="auth-success" id="register-success" style="display: none; color: var(--success); margin-bottom: 15px; text-align: center; font-size: 0.9em; padding: 10px; background: #ecfccb; border-radius: 6px;"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1em;">Register Account</button>
+            </form>
+            <div class="auth-footer" style="margin-top: 20px; text-align: center; font-size: 0.9em;">
+                <p>Already have an account? <a href="#" id="link-login" style="color: var(--primary-color); font-weight: 500;">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="main-app" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <span class="logo-text">HR Portal</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-view="my-requests">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    <span>My Requests</span>
+                </a>
+                <a href="#" class="nav-item" data-view="pending-approvals" id="nav-pending-approvals">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>Pending Approvals</span>
+                    <span class="badge" id="pending-badge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-view="all-requests" id="nav-all-requests">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span>All Requests</span>
+                </a>
+                <a href="#" class="nav-item" data-view="profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>My Profile</span>
+                </a>
+                <a href="#" class="nav-item" data-view="analytics">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18"></path>
+                        <path d="M18 17V9"></path>
+                        <path d="M13 17V5"></path>
+                        <path d="M8 17v-3"></path>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-view="user-management" id="nav-user-management"
+                    style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>User Management</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">JD</div>
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">John Doe</span>
+                        <span class="user-role" id="user-role">Employee</span>
+                    </div>
+                </div>
+                <div class="role-switcher" style="padding-top: 15px; border-top: 1px solid var(--border-color); margin-top: auto;">
+                    <button class="btn btn-outline" id="btn-logout" style="width: 100%; color: var(--error-600); border-color: var(--error-600); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="menu-toggle" id="menu-toggle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <div class="header-title">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p class="header-subtitle" id="page-subtitle">Overview of your leave requests</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="new-request-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        <span>New Request</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section class="view active" id="view-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card stat-pending">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-pending">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-approved">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-approved">0</span>
+                            <span class="stat-label">Approved</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-rejected">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-rejected">0</span>
+                            <span class="stat-label">Rejected</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-balance">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-balance">21</span>
+                            <span class="stat-label">Annual Leave Days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="card recent-requests">
+                        <div class="card-header">
+                            <h3>Recent Requests</h3>
+                            <a href="#" class="view-all" onclick="App.navigateTo('my-requests')">View All</a>
+                        </div>
+                        <div class="card-body" id="recent-requests-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Team Availability for GM/HR -->
+                    <div class="card team-availability" id="team-availability-card" style="display: none;">
+                        <div class="card-header">
+                            <h3>Employee Availability</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">Real-time tracking of team
+                                status</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="availability-list" id="availability-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card quick-actions">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-buttons">
+                            <button class="action-btn" data-type="vacation">
+                                <div class="action-icon vacation">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                    </svg>
+                                </div>
+                                <span>Vacation</span>
+                            </button>
+                            <button class="action-btn" data-type="absence">
+                                <div class="action-icon absence">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                        <line x1="9" y1="14" x2="15" y2="14" />
+                                    </svg>
+                                </div>
+                                <span>Absence</span>
+                            </button>
+                            <button class="action-btn" data-type="late">
+                                <div class="action-icon late">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>
+                                </div>
+                                <span>Late</span>
+                            </button>
+                            <button class="action-btn" data-type="business-trip">
+                                <div class="action-icon business-trip">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                                    </svg>
+                                </div>
+                                <span>Business Trip</span>
+                            </button>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- My Requests View -->
+            <section class="view" id="view-my-requests">
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <select id="filter-type">
+                            <option value="">All Types</option>
+                            <option value="vacation">Vacation</option>
+                            <option value="absence">Absence</option>
+                            <option value="late">Late</option>
+                            <option value="business-trip">Business Trip</option>
+                        </select>
+                        <select id="filter-status">
+                            <option value="">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="pending-dept">Pending Dept. Approval</option>
+                            <option value="pending-gm">Pending GM Approval</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" placeholder="Search requests..." id="search-requests">
+                    </div>
+                </div>
+                <div class="request-list-container" id="my-requests-list">
+                    <!-- Requests will be populated here -->
+                </div>
+            </section>
+
+            <!-- Pending Approvals View -->
+            <section class="view" id="view-pending-approvals">
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <select id="approval-filter-type">
+                            <option value="">All Types</option>
+                            <option value="vacation">Vacation</option>
+                            <option value="absence">Absence</option>
+                            <option value="late">Late</option>
+                            <option value="business-trip">Business Trip</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="request-list-container" id="pending-approvals-list">
+                    <!-- Pending approvals will be populated here -->
+                </div>
+            </section>
+
+            <!-- All Requests View -->
+            <section class="view" id="view-all-requests">
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <select id="all-filter-type">
+                            <option value="">All Types</option>
+                            <option value="vacation">Vacation</option>
+                            <option value="absence">Absence</option>
+                            <option value="late">Late</option>
+                            <option value="business-trip">Business Trip</option>
+                        </select>
+                        <select id="all-filter-status">
+                            <option value="">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="pending-dept">Pending Dept. Approval</option>
+                            <option value="pending-gm">Pending GM Approval</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select id="all-filter-employee">
+                            <option value="">All Employees</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="request-list-container" id="all-requests-list">
+                    <!-- All requests will be populated here -->
+                </div>
+            </section>
+            <!-- User Management View -->
+            <section class="view" id="view-user-management">
+                <div class="card" id="pending-users-card" style="display: none; border-color: var(--warning-500); margin-bottom: var(--spacing-6);">
+                    <div class="card-header" style="background: rgba(251, 191, 36, 0.1);">
+                        <h3 style="color: var(--warning-400);">Pending Registrations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Email</th>
+                                        <th>Department</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-list-body">
+                                    <!-- Pending list will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Users</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Employee ID</th>
+                                        <th>Email</th>
+                                        <th>Department</th>
+                                        <th>Role</th>
+                                        <th>Privilege</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-list-body">
+                                    <!-- User list will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile View -->
+            <section class="view" id="view-profile">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-picture-section">
+                            <div class="profile-picture-wrapper" id="profile-picture-display">
+                                <!-- Avatar or Image will be here -->
+                            </div>
+                            <button class="btn btn-primary btn-sm" id="edit-profile-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                <span>Edit Profile</span>
+                            </button>
+                        </div>
+                        <div class="profile-header-info">
+                            <h2 id="profile-display-name">Loading...</h2>
+                            <p class="profile-position-text" id="profile-display-position">Position</p>
+                            <p class="profile-dept-text" id="profile-display-dept">Department</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-details-grid" id="profile-details-content">
+                        <!-- Profile sections will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics View -->
+            <section class="view" id="view-analytics">
+                <div class="analytics-container">
+                    <div class="analytics-header">
+                        <h2>Analytics & Insights</h2>
+                        <p>Visual reporting and team availability tracking</p>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <!-- Monthly Trends -->
+                        <div class="chart-card">
+                            <canvas id="chart-monthly-trends"></canvas>
+                        </div>
+
+                        <!-- Type Distribution -->
+                        <div class="chart-card">
+                            <canvas id="chart-type-distribution"></canvas>
+                        </div>
+
+                        <!-- Department Comparison -->
+                        <div class="chart-card">
+                            <canvas id="chart-department-comparison"></canvas>
+                        </div>
+
+                        <!-- Status Breakdown -->
+                        <div class="chart-card">
+                            <canvas id="chart-status-breakdown"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Team Availability -->
+                    <div class="team-availability-section">
+                        <h3>Team Availability</h3>
+                        <div id="team-availability-list">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- New Request Type Modal -->
+            <div class="modal" id="modal-request-type">
+                <div class="modal-overlay"></div>
+                <div class="modal-content modal-sm">
+                    <div class="modal-header">
+                        <h2>New Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select the type of request you want to create:</p>
+                        <div class="request-type-grid">
+                            <button class="request-type-btn" data-type="vacation">
+                                <div class="type-icon vacation">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                    </svg>
+                                </div>
+                                <span class="type-name">Vacation</span>
+                                <span class="type-desc">Annual, LWOP, Family leave</span>
+                            </button>
+                            <button class="request-type-btn" data-type="absence">
+                                <div class="type-icon absence">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>
+                                </div>
+                                <span class="type-name">Absence</span>
+                                <span class="type-desc">Regular or with excuse</span>
+                            </button>
+                            <button class="request-type-btn" data-type="late">
+                                <div class="type-icon late">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>
+                                </div>
+                                <span class="type-name">Late Arrival</span>
+                                <span class="type-desc">Report late with reason</span>
+                            </button>
+                            <button class="request-type-btn" data-type="business-trip">
+                                <div class="type-icon business-trip">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                                    </svg>
+                                </div>
+                                <span class="type-name">Business Trip</span>
+                                <span class="type-desc">Travel for work</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vacation Request Modal -->
+            <div class="modal" id="modal-vacation">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Vacation Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-vacation">
+                            <input type="hidden" id="vacation-id" name="id">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="vacation-type">Vacation Type <span class="required">*</span></label>
+                                    <select id="vacation-type" name="vacationType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="annual">Annual Vacation</option>
+                                        <option value="lwop">LWOP (Leave Without Payment)</option>
+                                        <option value="family">Family Vacation</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vacation-travel-date">Travel Date</label>
+                                    <input type="date" id="vacation-travel-date" name="travelDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="vacation-start-date">Start Date <span class="required">*</span></label>
+                                    <input type="date" id="vacation-start-date" name="startDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vacation-joining-date">Joining Date <span
+                                            class="required">*</span></label>
+                                    <input type="date" id="vacation-joining-date" name="joiningDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vacation-days">Number of Days</label>
+                                    <input type="number" id="vacation-days" name="days" min="1" readonly>
+                                </div>
+                                <div class="form-group full-width checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="vacation-encashment" name="ticketEncashment">
+                                        <span class="checkbox-custom"></span>
+                                        <span>Ticket Encashment (Request ticket as cash)</span>
+                                    </label>
+                                </div>
+                                <div class="form-group full-width checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="vacation-exit-reentry" name="exitReentry">
+                                        <span class="checkbox-custom"></span>
+                                        <span>Exit-Re-entry Required</span>
+                                    </label>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="vacation-notes">Additional Notes</label>
+                                    <textarea id="vacation-notes" name="notes" rows="3"
+                                        placeholder="Any additional information..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-outline" id="vacation-save-draft">Save as Draft</button>
+                        <button type="button" class="btn btn-primary" id="vacation-submit">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Absence Request Modal -->
+            <div class="modal" id="modal-absence">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Absence Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-absence">
+                            <input type="hidden" id="absence-id" name="id">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="absence-type">Absence Type <span class="required">*</span></label>
+                                    <select id="absence-type" name="absenceType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="regular">Regular Absence</option>
+                                        <option value="excuse">Absence with Excuse (Sick Leave)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Date Selection <span class="required">*</span></label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="dateType" value="single" checked>
+                                            <span class="radio-custom"></span>
+                                            <span>Single Date</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="dateType" value="range">
+                                            <span class="radio-custom"></span>
+                                            <span>Date Range</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="absence-single-date-group">
+                                    <label for="absence-date">Date <span class="required">*</span></label>
+                                    <input type="date" id="absence-date" name="absenceDate">
+                                </div>
+                                <div class="form-group date-range hidden" id="absence-start-date-group">
+                                    <label for="absence-start-date">Start Date <span class="required">*</span></label>
+                                    <input type="date" id="absence-start-date" name="startDate">
+                                </div>
+                                <div class="form-group date-range hidden" id="absence-end-date-group">
+                                    <label for="absence-end-date">End Date <span class="required">*</span></label>
+                                    <input type="date" id="absence-end-date" name="endDate">
+                                </div>
+                                <div class="form-group full-width" id="absence-excuse-group">
+                                    <label for="absence-reason">Reason / Excuse</label>
+                                    <textarea id="absence-reason" name="reason" rows="3"
+                                        placeholder="Explain the reason for absence..."></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="absence-attachment">Attachments (Medical certificate, etc.)</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="absence-attachment" name="attachment"
+                                            accept=".pdf,.jpg,.jpeg,.png">
+                                        <div class="file-upload-content">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                <polyline points="17 8 12 3 7 8" />
+                                                <line x1="12" y1="3" x2="12" y2="15" />
+                                            </svg>
+                                            <span>Click to upload or drag and drop</span>
+                                            <span class="file-name" id="absence-file-name"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-outline" id="absence-save-draft">Save as Draft</button>
+                        <button type="button" class="btn btn-primary" id="absence-submit">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Late Request Modal -->
+            <div class="modal" id="modal-late">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Late Arrival Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-late">
+                            <input type="hidden" id="late-id" name="id">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="late-date">Date <span class="required">*</span></label>
+                                    <input type="date" id="late-date" name="lateDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="late-time">Arrival Time <span class="required">*</span></label>
+                                    <input type="time" id="late-time" name="arrivalTime" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="late-reason">Reason <span class="required">*</span></label>
+                                    <textarea id="late-reason" name="reason" rows="3"
+                                        placeholder="Explain the reason for late arrival..." required></textarea>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="late-attachment">Supporting Document (Optional)</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="late-attachment" name="attachment"
+                                            accept=".pdf,.jpg,.jpeg,.png">
+                                        <div class="file-upload-content">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                <polyline points="17 8 12 3 7 8" />
+                                                <line x1="12" y1="3" x2="12" y2="15" />
+                                            </svg>
+                                            <span>Click to upload or drag and drop</span>
+                                            <span class="file-name" id="late-file-name"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-outline" id="late-save-draft">Save as Draft</button>
+                        <button type="button" class="btn btn-primary" id="late-submit">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Trip Request Modal -->
+            <div class="modal" id="modal-business-trip">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Business Trip Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-business-trip">
+                            <input type="hidden" id="trip-id" name="id">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="trip-destination">Destination <span class="required">*</span></label>
+                                    <input type="text" id="trip-destination" name="destination"
+                                        placeholder="City, Country" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="trip-purpose">Purpose <span class="required">*</span></label>
+                                    <textarea id="trip-purpose" name="purpose" rows="2"
+                                        placeholder="Business purpose of the trip..." required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trip-departure">Departure Date <span class="required">*</span></label>
+                                    <input type="date" id="trip-departure" name="departureDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trip-return">Return Date <span class="required">*</span></label>
+                                    <input type="date" id="trip-return" name="returnDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trip-transportation">Transportation <span
+                                            class="required">*</span></label>
+                                    <select id="trip-transportation" name="transportation" required>
+                                        <option value="">Select</option>
+                                        <option value="flight">Flight</option>
+                                        <option value="car">Car</option>
+                                        <option value="train">Train</option>
+                                        <option value="bus">Bus</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="trip-accommodation" name="accommodation">
+                                            <span class="checkbox-custom"></span>
+                                            <span>Accommodation Needed</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group full-width checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="trip-perdiem" name="perDiem">
+                                        <span class="checkbox-custom"></span>
+                                        <span>Per Diem (Daily Allowance) Required</span>
+                                    </label>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="trip-notes">Additional Notes</label>
+                                    <textarea id="trip-notes" name="notes" rows="2"
+                                        placeholder="Any additional information..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-outline" id="trip-save-draft">Save as Draft</button>
+                        <button type="button" class="btn btn-primary" id="trip-submit">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Request Modal -->
+            <div class="modal" id="modal-view-request">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="view-request-title">Request Details</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="request-details" id="view-request-details">
+                            <!-- Request details will be populated here -->
+                        </div>
+                        <div class="workflow-timeline" id="view-request-timeline">
+                            <!-- Approval timeline will be populated here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="view-request-actions">
+                        <!-- Action buttons will be populated based on role and status -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approval/Rejection Modal -->
+            <div class="modal" id="modal-approval">
+                <div class="modal-overlay"></div>
+                <div class="modal-content modal-sm">
+                    <div class="modal-header">
+                        <h2 id="approval-title">Approve Request</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-approval">
+                            <input type="hidden" id="approval-request-id">
+                            <input type="hidden" id="approval-action">
+                            <div class="form-group">
+                                <label for="approval-comments">Comments</label>
+                                <textarea id="approval-comments" rows="3" placeholder="Add any comments..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="approval-confirm">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Modal -->
+            <div class="modal" id="modal-edit-profile">
+                <div class="modal-overlay"></div>
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h2>Edit My Profile</h2>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-edit-profile">
+                            <!-- Profile Picture Section -->
+                            <div class="form-section">
+                                <h3 class="form-section-title">Profile Picture</h3>
+                                <div class="profile-picture-upload-preview">
+                                    <div class="upload-preview-circle" id="profile-preview-container">
+                                        <div class="profile-avatar-large" id="profile-preview-avatar">JD</div>
+                                    </div>
+                                    <div class="upload-actions">
+                                        <input type="file" id="profile-upload-input" accept="image/*"
+                                            style="display: none;">
+                                        <button type="button" class="btn btn-outline btn-sm" id="btn-upload-pic">
+                                            Upload New Picture
+                                        </button>
+                                        <button type="button" class="btn btn-ghost btn-sm" id="btn-remove-pic">
+                                            Remove
+                                        </button>
+                                        <p class="help-text"
+                                            style="font-size: 11px; color: var(--text-tertiary); margin-top: 5px;">
+                                            Max size: 2MB. Format: JPG, PNG.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mandatory Details -->
+                            <div class="form-section">
+                                <h3 class="form-section-title">Mandatory Information</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="prof-name">Employee Name <span class="required">*</span></label>
+                                        <input type="text" id="prof-name" name="name" required placeholder="Full Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-emp-id">Employee ID Number <span
+                                                class="required">*</span></label>
+                                        <input type="text" id="prof-emp-id" name="employeeId" required
+                                            placeholder="EMP-XXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-nationality">Nationality <span
+                                                class="required">*</span></label>
+                                        <input type="text" id="prof-nationality" name="nationality" required
+                                            placeholder="Nationality">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-email">Email Address <span class="required">*</span></label>
+                                        <input type="email" id="prof-email" name="email" required
+                                            placeholder="name@company.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-password">New Password</label>
+                                        <input type="password" id="prof-password" name="password"
+                                            placeholder="(Leave blank to keep current)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-mobile">Mobile Number <span class="required">*</span></label>
+                                        <input type="tel" id="prof-mobile" name="mobileNumber" required
+                                            placeholder="+966 5X XXX XXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-position">Position <span class="required">*</span></label>
+                                        <input type="text" id="prof-position" name="position" required
+                                            placeholder="Job Title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-id-iqama">ID/Iqama Number <span
+                                                class="required">*</span></label>
+                                        <input type="text" id="prof-id-iqama" name="idIqamaNumber" required
+                                            placeholder="10XXXXXXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-id-expiry">Expiry Date of ID/Iqama <span
+                                                class="required">*</span></label>
+                                        <input type="date" id="prof-id-expiry" name="idIqamaExpiry" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-joining-date">Joining Date <span
+                                                class="required">*</span></label>
+                                        <input type="date" id="prof-joining-date" name="joiningDate" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-profile">Save Profile
+                            Changes</button>
+                    </div>
+                </div>
+            </div> <!-- End of app-container -->
+
+            <!-- Toast Notifications Container -->
+            <div class="toast-container" id="toast-container"></div>
+
+            <!-- External Libraries -->
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+            <!-- Scripts -->
+            <script src="js/api.js?v=3"></script>
+            <script src="js/calendar.js?v=3"></script>
+            <script src="js/pdf.js?v=3"></script>
+            <script src="js/analytics.js?v=3"></script>
+            <script src="js/data.js?v=3"></script>
+            <script src="js/auth.js?v=3"></script>
+            <script src="js/workflow.js?v=3"></script>
+            <script src="js/requests.js?v=3"></script>
+            <script src="js/app.js?v=3"></script>
+</body>
+
+</html>
