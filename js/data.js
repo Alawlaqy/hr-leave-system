@@ -262,6 +262,21 @@ const DataModule = (function () {
             }
         }
 
+        // Failsafe: Reset admin if ?reset=admin is in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('reset') === 'admin') {
+            const employees = JSON.parse(localStorage.getItem(STORAGE_KEYS.EMPLOYEES) || '[]');
+            const admin = employees.find(e => e.role === 'admin');
+            if (admin) {
+                admin.email = 'admin@company.com';
+                admin.password = '123456';
+                localStorage.setItem(STORAGE_KEYS.EMPLOYEES, JSON.stringify(employees));
+                alert('Admin credentials reset to default (admin@company.com / 123456)');
+                window.location.href = window.location.pathname;
+                return;
+            }
+        }
+
         if (!localStorage.getItem(STORAGE_KEYS.REQUESTS)) {
             localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(defaultRequests));
         }
